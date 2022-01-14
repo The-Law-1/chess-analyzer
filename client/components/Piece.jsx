@@ -9,7 +9,7 @@ const PieceContainerGrab = styled(PieceContainer)`
     cursor: grab;
 `
 
-function Piece({piece, position}) {
+function Piece({piece, position, startMoveCallback}) {
 
     var notation = piece.type;
     var color = piece.color;
@@ -24,6 +24,7 @@ function Piece({piece, position}) {
             return ({isDragging: !!monitor.isDragging() })
         }
     });
+
     const pieceImg = `/pieces/${notation}_${color}.png`;
 
     return (
@@ -31,7 +32,7 @@ function Piece({piece, position}) {
             {/* // * this doesn't work in the slightest */}
             <DragPreviewImage connect={preview} src={pieceImg} />
 
-            <PieceContainerGrab ref={drag}
+            <PieceContainerGrab position='absolute' onMouseDown={() => startMoveCallback()} ref={drag}
                 style={{opacity: isDragging ? 0 : 1}}>
                     <Image maxW='70%' maxH='70%' src={pieceImg} alt={piece.type}>
                     </Image>

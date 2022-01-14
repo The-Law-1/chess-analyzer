@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from '@emotion/styled';
 import BoardSquare from "./BoardSquare";
 import BoardElement from "./BoardElement";
+import { getLegalMoves } from "../lib/game";
 
 // const BoardElement = styled.div`
 //     width: 100%;
@@ -18,6 +19,7 @@ const SquareElement = styled.div`
 const Board = ({board, turn, flipView}) => {
 
     const [currentBoard, setCurrentBoard] = useState([]);
+    const [legalMoves, setLegalMoves] = useState([]);
 
     // * this is what will refresh your board when it changes
     useEffect(() => {
@@ -26,7 +28,7 @@ const Board = ({board, turn, flipView}) => {
                     flipView ? board.flat().reverse() : board.flat()
                 );
             // turn === 'w' ? board.flat() : board.flat().reverse()
-    }, [board, flipView])
+    }, [board, flipView]);
 
     function getCoordinates(i)
     {
@@ -53,6 +55,37 @@ const Board = ({board, turn, flipView}) => {
         return `${file}${rank}`
     }
 
+    function GetLegalMoves(fromPosition)
+    {
+        // * call the game library
+        let moves = getLegalMoves(fromPosition);
+        // * remove the letter notation so you just get the square
+        console.log("Full legal: ", moves);
+
+        // * translate castle notation
+        // * if it contains an = that's a promotion, cut off at the '='
+
+        moves = moves.map((val, i) => {
+
+            if (val === 'O-O-O') {
+                return (turn === 'w' ? 'c1' : 'c8');
+            }
+            if (val === 'O-O') {
+                return (turn === 'w' ? 'g1' : 'g8');
+            }
+            if (val.includes('+')) {
+                val = val.slice(0, -1);
+            }
+            return (val.slice(-2));
+        });
+
+        // * updateLegalMoves
+        legalMoves = moves;
+        setLegalMoves(moves);
+        // ! not sure how soon this updates/rebuilds
+        console.log("All legal moves in position: ", moves);
+    }
+
     return (
         <BoardElement className="board">
 
@@ -60,12 +93,20 @@ const Board = ({board, turn, flipView}) => {
             {/* //* creates a 'div' for each piece */}
             {/* //* cf: https://reactjs.org/docs/lists-and-keys.html */}
             {currentBoard.map((piece, i) => (
-                <SquareElement key={i}>
-                    <BoardSquare piece={piece} isBlack={isSquareBlack(i)} position={getAlgebraicPosition(i)}>
+                    <SquareElement key={i}>
+                        <BoardSquare
+                            piece={piece}
+                            isBlack={isSquareBlack(i)}
+                            position={getAlgebraicPosition(i)}
+                            getMovesCallback={(position) => GetLegalMoves(position)}
+                            clearMovesCallback={() => setLegalMoves([])}
+                            isLegalMoveSquare={legalMoves.includes(getAlgebraicPosition(i))}
+                            >
 
-                    </BoardSquare>
-                </SquareElement>
-            ))}
+                        </BoardSquare>
+                    </SquareElement>
+                )
+            )}
         </BoardElement>
     )
 }

@@ -25,6 +25,11 @@ export function resetGame()
     updateGame();
 }
 
+export function getLegalMoves(from)
+{
+    return (chess.moves({square: from}));
+}
+
 // * handles promotion, among other things
 export function handleMove(from, to)
 {
@@ -54,7 +59,7 @@ export function move(from, to, promotion = null)
     if (promotion) {
         move.promotion = promotion;
     }
-    // * might need to uppercase this 
+    // * might need to uppercase this
     const legalMove = chess.move(move);
 
     // * will return null if not legal, and if legal: an object:
