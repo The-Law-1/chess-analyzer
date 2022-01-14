@@ -62,9 +62,9 @@ const Board = ({board, turn, flipView}) => {
         // * remove the letter notation so you just get the square
         console.log("Full legal: ", moves);
 
-        
+
         moves = moves.map((val, i) => {
-            
+
             // * translate castle notation
             if (val === 'O-O-O') {
                 return (turn === 'w' ? 'c1' : 'c8');
