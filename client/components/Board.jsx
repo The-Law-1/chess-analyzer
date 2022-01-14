@@ -62,16 +62,19 @@ const Board = ({board, turn, flipView}) => {
         // * remove the letter notation so you just get the square
         console.log("Full legal: ", moves);
 
-        // * translate castle notation
-        // * if it contains an = that's a promotion, cut off at the '='
-
+        
         moves = moves.map((val, i) => {
-
+            
+            // * translate castle notation
             if (val === 'O-O-O') {
                 return (turn === 'w' ? 'c1' : 'c8');
             }
             if (val === 'O-O') {
                 return (turn === 'w' ? 'g1' : 'g8');
+            }
+            // * if it contains an = that's a promotion, cut off at the '='
+            if (val.includes('=')) {
+                val = val.split('=')[0];
             }
             if (val.includes('+')) {
                 val = val.slice(0, -1);
