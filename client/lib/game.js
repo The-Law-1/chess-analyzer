@@ -89,7 +89,8 @@ function updateGame(pendingPromotion=null)
         pendingPromotion,
         isGameOver,
         turn: chess.turn(),
-        result: isGameOver ? getGameResult() : null
+        result: isGameOver ? getGameResult() : null,
+        history: chess.history({verbose: true})
     };
     gameSubject.next(newGame);
 }

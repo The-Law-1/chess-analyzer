@@ -1,12 +1,13 @@
 import React, { Component, useEffect, useState} from 'react';
 import Square from './Square';
 import Piece from './Piece';
-import { Box, Center, Circle, CircularProgress, GridItem, SimpleGrid, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Box, Center, Circle, CircularProgress, Container, GridItem, SimpleGrid, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useDrop } from 'react-dnd';
 import { createPortal } from 'react-dom';
 import { handleMove } from '../lib/game';
 import {gameSubject} from '../lib/game';
 import Promote from './Promote';
+import PieceContainer from './PieceContainer';
 
 const BoardSquare = ({piece, isBlack, position, getMovesCallback, clearMovesCallback, isLegalMoveSquare}) => {
 
@@ -67,13 +68,14 @@ const BoardSquare = ({piece, isBlack, position, getMovesCallback, clearMovesCall
             <Square isBlack={isBlack}>
                 {
                     (isLegalMoveSquare && piece) &&
-                    <CircularProgress value={100} thickness='10px' color='gray' size='24%' position='absolute'>
+                    <CircularProgress value={100} thickness='10%' color='gray' size='24%' position='fixed'>
 
                     </CircularProgress>
                 }
                 {
                     (isLegalMoveSquare && !piece) &&
-                    <CircularProgress value={100} thickness='10%' color='gray' size='24%' position='absolute'>
+
+                    <CircularProgress value={100} thickness='10%' color='gray' size='24%' position='fixed'>
 
                     </CircularProgress>
                 }

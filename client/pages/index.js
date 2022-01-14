@@ -5,9 +5,9 @@ import React, {useEffect, useState} from 'react';
 import { Heading, Container, Box, Button, Center, Text, Flex } from '@chakra-ui/react';
 import {gameSubject, initGame, resetGame} from '../lib/game';
 import Board from '../components/Board';
+import AnalysisSection from '../components/AnalysisSection';
 
 const Page = () => {
-
 
 	const [board, setBoard] = useState([])
 	const [isGameOver, setIsGameOver] = useState(false);
@@ -61,7 +61,6 @@ const Page = () => {
 						<Button onClick={() => resetGame()}>
 							New game
 						</Button>
-
 					</Heading>
 				)}
 				<Box maxWidth='600px' h='600px'>
@@ -72,9 +71,11 @@ const Page = () => {
 				{/* //* board-container */}
 			</Container>
 
-			<Box width='300px' height='100%' bg='tomato'>
-				Hi !
-			</Box>
+			<Container width='300px' height='100%' backgroundColor='gray.500'>
+				<AnalysisSection>
+
+				</AnalysisSection>
+			</Container>
 		</Flex>
 
   	);

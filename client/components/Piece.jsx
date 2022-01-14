@@ -32,9 +32,9 @@ function Piece({piece, position, startMoveCallback}) {
             {/* // * this doesn't work in the slightest */}
             <DragPreviewImage connect={preview} src={pieceImg} />
 
-            <PieceContainerGrab position='absolute' onMouseDown={() => startMoveCallback()} ref={drag}
+            <PieceContainerGrab onMouseDown={() => startMoveCallback()} ref={drag}
                 style={{opacity: isDragging ? 0 : 1}}>
-                    <Image maxW='70%' maxH='70%' src={pieceImg} alt={piece.type}>
+                    <Image position='relative' maxW='70%' maxH={'70%'} src={pieceImg} alt={piece.type}>
                     </Image>
             </PieceContainerGrab>
         </>
