@@ -27,7 +27,7 @@ const Page = () => {
 			setTurn(game.turn);
 		});
 
-		return (() => subscription.unsubscribe)
+		return (() => subscription.unsubscribe())
 	}, []);
 
 	function flipBoard()
@@ -71,7 +71,7 @@ const Page = () => {
 				{/* //* board-container */}
 			</Container>
 
-			<Container width='300px' height='100%' backgroundColor='gray.500'>
+			<Container width='300px' minHeight='600px'  height='600px' backgroundColor='gray' overflowY='scroll'>
 				<AnalysisSection>
 
 				</AnalysisSection>

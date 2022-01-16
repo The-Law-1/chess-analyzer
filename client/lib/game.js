@@ -1,4 +1,5 @@
 const ChessJS = require('chess.js');
+import { NumberIncrementStepper } from '@chakra-ui/react';
 // * https://github.com/jhlywa/chess.js
 import {Subject, BehaviorSubject} from 'rxjs';
 // import { BehaviourSubject } from 'rxjs';
@@ -8,9 +9,28 @@ let staleMate = "4k3/4P3/4K3/8/8/8/8/8 b - - 0 78";
 let checkMate = "rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3";
 let insuficcientMaterial = "k7/8/n7/8/8/8/8/7K b - - 0 1";
 
+let pgnGame = `[Event "Live Chess"]
+[Site "Chess.com"]
+[Date "2022.01.12"]
+[Round "?"]
+[White "The_Lawx"]
+[Black "Bradom1n"]
+[Result "1-0"]
+[ECO "C25"]
+[WhiteElo "1180"]
+[BlackElo "1000"]
+[TimeControl "600"]
+[EndTime "0:58:14 PST"]
+[Termination "The_Lawx won by resignation"]
+
+1. e4 e5 2. Nc3 c6 3. Bc4 Nf6 4. f4 exf4 5. e5 Nd5 6. Nf3 Nxc3 7. bxc3 b5 8. Bb3
+a5 9. a4 Ba6 10. d4 d5 11. Bxf4 Be7 12. O-O O-O 13. Re1 h6 14. e6 fxe6 15. Rxe6
+Rxf4 16. Ne5 Nd7 17. Nxc6 Qf8 18. Nxe7+ Kh8 19. Ng6+ 1-0`
+
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
 const chess = new Chess();
+chess.load_pgn(pgnGame);
 
 // todo evaluate if this is really necessary, isn't this the whole point of REACT's state ??
 export const gameSubject = new BehaviorSubject()
@@ -23,6 +43,27 @@ export function resetGame()
 {
     chess.reset();
     updateGame();
+}
+
+// * get game history
+export function getGameHistory()
+{
+    return (chess.history({verbose: true}));
+}
+
+// * should always be a legal move because it's called from the history analyzer
+export function playMove(moveNotation)
+{
+    const legalMove = chess.move(moveNotation);
+
+    // * will return null if not legal, and if legal: an object:
+    // * { color: 'w', from: 'g2', to: 'g3', flags: 'n', piece: 'p', san: 'g3' }
+    if (legalMove) {
+        // * this returns a comment, maybe the opening ?!
+        chess.get_comment();
+
+        updateGame();
+    }
 }
 
 export function getLegalMoves(from)
@@ -49,6 +90,21 @@ export function handleMove(from, to)
         move(from, to);
     } else {
         console.log("not moving because promotion is pending");
+    }
+}
+
+export function undoLastMove()
+{
+    const { pendingPromotion } = gameSubject.getValue();
+    if (!pendingPromotion) {
+        var legalUndo = chess.undo();
+        if (legalUndo === null) {
+            console.log("Illegal to undo move");
+        } else {
+            updateGame();
+        }
+    } else {
+        console.log("not undoing because promotion is pending");
     }
 }
 
