@@ -60,7 +60,6 @@ export function playMove(moveNotation)
     // * { color: 'w', from: 'g2', to: 'g3', flags: 'n', piece: 'p', san: 'g3' }
     if (legalMove) {
         // * this returns a comment, maybe the opening ?!
-        chess.get_comment();
 
         updateGame();
     }
@@ -122,9 +121,6 @@ export function move(from, to, promotion = null)
     // * { color: 'w', from: 'g2', to: 'g3', flags: 'n', piece: 'p', san: 'g3' }
     if (legalMove) {
         console.log(chess.fen());
-
-        // * this returns a comment, maybe the opening ?!
-        chess.get_comment();
 
         updateGame();
     } else {

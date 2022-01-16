@@ -72,9 +72,7 @@ const Page = () => {
 			</Container>
 
 			<Container width='300px' minHeight='600px'  height='600px' backgroundColor='gray' overflowY='scroll'>
-				<AnalysisSection>
-
-				</AnalysisSection>
+				<AnalysisSection/>
 			</Container>
 		</Flex>
 

@@ -43,7 +43,9 @@ const BoardSquare = ({piece, isBlack, position, getMovesCallback, clearMovesCall
 
     // * runs every position change
     useEffect(() => {
-        const subscription = gameSubject.subscribe(({pendingPromotion}) => {
+        const subscription = gameSubject.subscribe((game) => {
+
+            let pendingPromotion = game.pendingPromotion;
             // * if someone is promoting to this square
             if (pendingPromotion !== null && pendingPromotion.to === position) {
                 setPromotion(pendingPromotion);
