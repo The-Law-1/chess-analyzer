@@ -22,9 +22,11 @@ function AnalysisSection({}) {
             }
 
         } else if (key === "ArrowRight") {
-            console.log("Pressed right key");
+            console.log("Pressed right key: ", history.length - 1);
 
             if (currentMoveIndex < history.length - 1) {
+                console.log("Changing index");
+
                 currentMoveIndex++;
 
                 // ? not sure how useful it is to setCurrentMoveIndex this way
@@ -41,10 +43,12 @@ function AnalysisSection({}) {
 	useEffect(() => {
         initGame();
 
-        var history = getGameHistory();
-        setHistory(history);
-        setCurrentMoveIndex(history.length - 1)
-        currentMoveIndex = history.length - 1;
+        var chessHistory = getGameHistory();
+
+        setHistory(chessHistory);
+        history = chessHistory;
+        setCurrentMoveIndex(chessHistory.length - 1)
+        currentMoveIndex = chessHistory.length - 1;
 
         window.addEventListener("keyup", keyUpHandler);
 
