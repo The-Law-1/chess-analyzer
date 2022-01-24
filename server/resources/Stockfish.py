@@ -54,6 +54,7 @@ def main():
         stockfishParser.add_argument(key)
 
 main()
+# * why are we quitting so soon ?
 engine.quit()
 
 # * this is the attributes in the request object
