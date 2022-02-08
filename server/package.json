@@ -4,8 +4,14 @@
   "description": "chess analyzer backend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "./node_modules/.bin/nodemon index.js"
   },
   "author": "Gabriel Griffin",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "nodemon": "^2.0.15",
+    "swagger-ui-express": "^4.3.0"
+  }
 }
