@@ -1,0 +1,27 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Chess analyzer api",
+        "description": "Analyzes chess positions mostly",
+        "version": "v2"
+    },
+    "host": "localhost:3000",
+    "basePath": "/api",
+    "paths": {
+        "/hello": {
+            "get": {
+                "operationId": "Say hello",
+                "summary": "says hello",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": "application/json"
+                    }
+                }
+            }
+        }
+    }
+}

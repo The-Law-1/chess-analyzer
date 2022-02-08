@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const swaggerUi = require('swagger-ui-express');
 
-// const swaggerDocument = require('./doc/swagger');
+const swaggerDocument = require('./doc/swagger.json');
 
 const port = 3000;
 
@@ -27,11 +27,11 @@ const apiPort = port
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 app.use(express.json())
-// app.use("/api/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/api/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.get('/api', (req, res) => {
+app.get('/api/hello', (req, res) => {
     res.send('Hello World!')
-})
+});
 
 // app.use('/api', userRouter);
 // app.use('/jwt', jwtRouter);
