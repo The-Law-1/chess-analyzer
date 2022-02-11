@@ -33,6 +33,10 @@ app.get('/api/hello', (req, res) => {
     res.send('Hello World!')
 });
 
+app.get('/api/isPositive/:num', (req, res) => {
+    res.send(req.params.num > 0 ? "Positive" : "Negative");
+});
+
 // app.use('/api', userRouter);
 // app.use('/jwt', jwtRouter);
 // app.use(

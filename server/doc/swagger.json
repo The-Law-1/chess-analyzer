@@ -22,6 +22,27 @@
                     }
                 }
             }
+        },
+        "/isPositive/{num}": {
+            "get": {
+                "summary": "Returns if a number is > 0",
+                "operationId": "isPositive",
+                "parameters": [
+                    {
+                        "name": "num",
+                        "in": "path",
+                        "required": true,
+                        "description": "Number to evaluate",
+                        "type": "number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": "application/json"
+                    }
+                }
+            }
         }
     }
 }
