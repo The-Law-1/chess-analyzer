@@ -2,9 +2,11 @@ const express = require('express')
 const cors = require('cors')
 const swaggerUi = require('swagger-ui-express');
 
+const engine = require('./uci/EngineHandler');
+
 const swaggerDocument = require('./doc/swagger.json');
 
-const port = 3000;
+const apiPort = 3000;
 
 // const userRouter = require('./routes/user-router');
 // const jwtRouter = require('./routes/jwt-router');
@@ -17,12 +19,6 @@ const port = 3000;
 // const aboutRouter = require('./routes/about-router');
 
 const app = express();
-if (port == undefined) {
-    console.log("DASHBOARD SERVER PORT NOT FOUND");
-    port = 3000;
-}
-
-const apiPort = port
 
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
@@ -38,7 +34,6 @@ app.get('/api/isPositive/:num', (req, res) => {
 });
 
 // app.use('/api', userRouter);
-// app.use('/jwt', jwtRouter);
 // app.use(
 //     userRouter,
 //     jwtRouter,
