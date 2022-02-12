@@ -2,13 +2,13 @@ const express = require('express')
 const cors = require('cors')
 const swaggerUi = require('swagger-ui-express');
 
-const engine = require('./uci/EngineHandler');
+const engine = require('./services/EngineHandler');
 
 const swaggerDocument = require('./doc/swagger.json');
 
 const apiPort = 3000;
 
-// const userRouter = require('./routes/user-router');
+const engineRouter = require('./routes/EngineRouter');
 // const jwtRouter = require('./routes/jwt-router');
 // const nbaRouter = require('./routes/nba-router');
 // const cryptoRouter = require('./routes/crypto-router');
@@ -34,6 +34,7 @@ app.get('/api/isPositive/:num', (req, res) => {
 });
 
 // app.use('/api', userRouter);
+app.use(engineRouter);
 // app.use(
 //     userRouter,
 //     jwtRouter,

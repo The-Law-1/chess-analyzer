@@ -26,7 +26,7 @@ async function TestEngine()
 }
 
 // * returns the best move, score, and 3 best lines ?
-async function AnalysePosition(fenPosition, options = [])
+async function AnalysePosition(fenPosition, options = [], maxDepth=12)
 {
     await engine.init();
     await engine.isready();
@@ -35,7 +35,7 @@ async function AnalysePosition(fenPosition, options = [])
     await engine.setoption("MultiPV", "3");
 
     await engine.position(fenPosition);
-    let depthValue = 12;
+    let depthValue = maxDepth;
 
     console.log("engine ready", engine.id, engine.options);
     const result = await engine.go({depth: depthValue});
