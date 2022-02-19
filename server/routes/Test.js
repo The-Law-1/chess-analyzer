@@ -13,7 +13,7 @@ const testRouter = express.Router()
  *         description: Returns a greeting
  */
 testRouter.get('/api/hello', (req, res) => {
-    res.send('Hello World!')
+    res.send('Hello World!');
 });
 
 /**

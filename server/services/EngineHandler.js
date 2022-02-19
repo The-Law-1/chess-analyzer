@@ -25,20 +25,25 @@ async function TestEngine()
     await engine.quit();
 }
 
+// * other request to modify the parameters, take them in the url so it's easier ?
+// * or in the body and good luck documenting them
+
 // * returns the best move, score, and 3 best lines ?
-async function AnalysePosition(fenPosition, options = [], maxDepth=12)
+async function AnalysePosition(fenPosition, maxDepth=12)
 {
+    console.log("INHERE");
     await engine.init();
     await engine.isready();
+    console.log("INHERE");
 
     // * set your options here, cf testEngine
     await engine.setoption("MultiPV", "3");
 
+    // ! catch the bad fen position
     await engine.position(fenPosition);
-    let depthValue = maxDepth;
 
     console.log("engine ready", engine.id, engine.options);
-    const result = await engine.go({depth: depthValue});
+    const result = await engine.go({depth: maxDepth});
 
     console.log('Result ', result);
 
