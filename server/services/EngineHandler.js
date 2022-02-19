@@ -39,8 +39,15 @@ async function AnalysePosition(fenPosition, maxDepth=12)
     // * set your options here, cf testEngine
     await engine.setoption("MultiPV", "3");
 
+    console.log("FEN POSITION ", fenPosition);
+    console.log("Depth ", maxDepth);
+
     // ! catch the bad fen position
-    await engine.position(fenPosition);
+    try {
+        await engine.position(fenPosition);
+    } catch (error) {
+        throw Error("COuld not set position : " + fenPosition);
+    }
 
     console.log("engine ready", engine.id, engine.options);
     const result = await engine.go({depth: maxDepth});

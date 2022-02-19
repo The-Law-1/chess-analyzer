@@ -2,7 +2,7 @@ const EngineHandler = require('../services/EngineHandler');
 
 analysePosition = async (req, res) =>
 {
-    const body = req.body
+    const body = req.body;
 
     // * empty or no body
     if (!body) {
@@ -11,6 +11,8 @@ analysePosition = async (req, res) =>
             error: 'You must provide a position',
         })
     }
+
+    console.log("Got body; ", body);
 
     // * call up the engine handler
     const fenPosition = body.fenPosition;
