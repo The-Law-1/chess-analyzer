@@ -43,17 +43,20 @@ function AnalysisSection({}) {
 	useEffect(() => {
         initGame();
 
-        var chessHistory = getGameHistory();
+        const subscription = gameSubject.subscribe((game) => {
+            var chessHistory = getGameHistory();
 
-        setHistory(chessHistory);
-        history = chessHistory;
-        setCurrentMoveIndex(chessHistory.length - 1)
-        currentMoveIndex = chessHistory.length - 1;
+            setHistory(chessHistory);
+            history = chessHistory;
+            setCurrentMoveIndex(chessHistory.length - 1)
+            currentMoveIndex = chessHistory.length - 1;
+		});
 
         window.addEventListener("keyup", keyUpHandler);
 
 		return (() => {
             window.removeEventListener("keyup", keyUpHandler);
+            subscription.unsubscribe();
         })
 	}, []);
 

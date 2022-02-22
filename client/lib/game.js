@@ -30,10 +30,19 @@ Rxf4 16. Ne5 Nd7 17. Nxc6 Qf8 18. Nxe7+ Kh8 19. Ng6+ 1-0`
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
 const chess = new Chess();
-chess.load_pgn(pgnGame);
+// chess.load_pgn(pgnGame);
 
 // todo evaluate if this is really necessary, isn't this the whole point of REACT's state ??
 export const gameSubject = new BehaviorSubject()
+
+
+export function LoadPGN(pgnValue)
+{
+    // * true or false
+    let success = chess.load_pgn(pgnValue);
+    updateGame();
+    return (success);
+}
 
 export function initGame() {
     updateGame();

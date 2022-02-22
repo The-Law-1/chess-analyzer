@@ -45,12 +45,17 @@ const BoardSquare = ({piece, isBlack, position, getMovesCallback, clearMovesCall
     useEffect(() => {
         const subscription = gameSubject.subscribe((game) => {
 
-            let pendingPromotion = game.pendingPromotion;
-            // * if someone is promoting to this square
-            if (pendingPromotion !== null && pendingPromotion.to === position) {
-                setPromotion(pendingPromotion);
-            } else {
-                setPromotion(null);
+            // * sometimes I guess it doesn't have the property right off the bat
+            // ! this is very bizarre though
+            if (game !== undefined && game.hasOwnProperty('pendingPromotion')) {
+
+                let pendingPromotion = game.pendingPromotion;
+                // * if someone is promoting to this square
+                if (pendingPromotion !== null && pendingPromotion.to === position) {
+                    setPromotion(pendingPromotion);
+                } else {
+                    setPromotion(null);
+                }
             }
         })
 
