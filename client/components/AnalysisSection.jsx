@@ -8,6 +8,9 @@ function AnalysisSection({newPGNValue}) {
 	const [history, setHistory] = useState([]);
     const [currentMoveIndex, setCurrentMoveIndex] = useState(0);
 
+    // TODO associate each move index with their fen position, so that if you click on it, you can set the position that way
+    // TODO and also you can analyse them by sending each position to the backend
+
     function keyUpHandler({key}) {
 
         // todo double check that you are focused on the window and not on like a text area
