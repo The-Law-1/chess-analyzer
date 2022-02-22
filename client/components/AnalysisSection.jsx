@@ -3,18 +3,18 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {gameSubject, initGame, playMove, undoLastMove, getGameHistory} from '../lib/game';
 
-function AnalysisSection({}) {
+function AnalysisSection({newPGNValue}) {
 
 	const [history, setHistory] = useState([]);
     const [currentMoveIndex, setCurrentMoveIndex] = useState(0);
 
     function keyUpHandler({key}) {
 
+        // todo double check that you are focused on the window and not on like a text area
+
         if (key === "ArrowLeft") {
-            console.log("Pressed left: ", currentMoveIndex);
 
             if (currentMoveIndex > -1) {
-                console.log("Undo-ing");
                 currentMoveIndex -= 1;
                 // ? not sure how useful it is to setCurrentMoveIndex this way
                 setCurrentMoveIndex(currentMoveIndex);
@@ -22,10 +22,8 @@ function AnalysisSection({}) {
             }
 
         } else if (key === "ArrowRight") {
-            console.log("Pressed right key: ", history.length - 1);
 
             if (currentMoveIndex < history.length - 1) {
-                console.log("Changing index");
 
                 currentMoveIndex++;
 
@@ -39,26 +37,26 @@ function AnalysisSection({}) {
         }
     }
 
-    // * subscribe to the game to keep its history
+    // ! you can't subscribe to the game otherwise you lose the history (undo)
+
 	useEffect(() => {
         initGame();
 
-        const subscription = gameSubject.subscribe((game) => {
-            var chessHistory = getGameHistory();
+        let chessHistory = getGameHistory();
 
-            setHistory(chessHistory);
-            history = chessHistory;
-            setCurrentMoveIndex(chessHistory.length - 1)
-            currentMoveIndex = chessHistory.length - 1;
-		});
+        setHistory(chessHistory);
+        history = chessHistory;
+        setCurrentMoveIndex(chessHistory.length - 1)
+        currentMoveIndex = chessHistory.length - 1;
 
+        // * in case there was one already
+        window.removeEventListener("keyup", keyUpHandler);
         window.addEventListener("keyup", keyUpHandler);
 
 		return (() => {
             window.removeEventListener("keyup", keyUpHandler);
-            subscription.unsubscribe();
         })
-	}, []);
+	}, [newPGNValue]);
 
     return (
         <Box>

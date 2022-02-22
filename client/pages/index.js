@@ -16,6 +16,8 @@ const Page = () => {
 	const [flipView, setFlipView] = useState(false);
     const [pgnValue, setPGNValue] = useState("");
 
+    const [analyserProp, setAnalyserProp] = useState("");
+
     const handlePGNChange = (event) => setPGNValue(event.target.value);
 
     function LoadNewPGN()
@@ -24,7 +26,9 @@ const Page = () => {
         let success = LoadPGN(pgnValue);
         if (success === false) {
             console.warn("Failed to load PGN");
+            setAnalyserProp("");
         }
+        setAnalyserProp(pgnValue);
     }
 
 	useEffect(() => {
@@ -96,7 +100,7 @@ const Page = () => {
                 </Container>
 
                 <Container width='300px' minHeight='600px'  height='600px' backgroundColor='gray' overflowY='scroll'>
-                    <AnalysisSection/>
+                    <AnalysisSection newPGNValue={analyserProp}/>
                 </Container>
             </Flex>
         </div>
