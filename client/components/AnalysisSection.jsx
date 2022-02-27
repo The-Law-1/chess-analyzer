@@ -1,4 +1,6 @@
-import { Box, position, SimpleGrid, Text } from '@chakra-ui/react';
+import { Box, Button, Center, GridItem, IconButton, position, SimpleGrid, Spinner, Text } from '@chakra-ui/react';
+import { ChevronRightIcon } from '@chakra-ui/icons'
+
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {gameSubject, initGame, playMove, undoLastMove, getGameHistory, resetGame, GetFEN, LoadFEN} from '../lib/game';
@@ -11,16 +13,15 @@ function AnalysisSection({newPGNValue}) {
     const [fenPositions, setFenPositions] = useState([]);
     const [positionScores, setPositionScores] = useState([]);
 
-    // TODO get all the scores for each position by sending the full position array
-
-    function keyUpHandler({key}) {
+    function keyUpHandler(key) {
 
         // todo double check that you are focused on the window and not on like a text area
 
+        console.log("Current move index ", currentMoveIndex);
+
         if (key === "ArrowLeft") {
             if (currentMoveIndex > -1) {
-                currentMoveIndex -= 1;
-                PlayMoveAtIndex(currentMoveIndex);
+                PlayMoveAtIndex(currentMoveIndex - 1);
 
                 // // ? not sure how useful it is to setCurrentMoveIndex this way
                 // setCurrentMoveIndex(currentMoveIndex);
@@ -31,16 +32,11 @@ function AnalysisSection({newPGNValue}) {
 
             if (currentMoveIndex < history.length - 1) {
 
-                currentMoveIndex++;
-
-                PlayMoveAtIndex(currentMoveIndex);
+                PlayMoveAtIndex(currentMoveIndex + 1);
                 // // ? not sure how useful it is to setCurrentMoveIndex this way
                 // setCurrentMoveIndex(currentMoveIndex);
                 // playMove(history[currentMoveIndex].san);
             }
-            // * a little trickier, play the next move in store
-            // * that means keeping track of the current index
-            // * and you play the move at idx+1
         }
     }
 
@@ -48,9 +44,7 @@ function AnalysisSection({newPGNValue}) {
     {
         setCurrentMoveIndex(i);
         currentMoveIndex = i;
-        LoadFEN(fenPositions[i]);
-        console.log(fenPositions[i]);
-        // * load fen
+        // useeffect will load the appropriate fen
     }
 
     function GenerateFenPositions()
@@ -78,22 +72,37 @@ function AnalysisSection({newPGNValue}) {
         };
 
         console.log("Analysing...");
+
         positionsPayload.fenPositions = fenPositions;
         await analysePositions(positionsPayload)
         .then(res => {
             if (res.status === 200) {
-                console.log("Got analysis': ", res);
                 // * setstate
-                positionScores = res;
-                setPositionScores(res);
+                positionScores = res.data;
+                setPositionScores(res.data);
+                console.log("Got analysis': ", res);
+                console.log(positionScores[0].bestLines);
             } else {
                 alert("Could not retrieve analysis");
             }
         })
         .catch(err => {
-            alert("Invalid request");
+            alert("Invalid request " + err);
         })
     }
+
+    useEffect(() => {
+        if (fenPositions.length > 0) {
+            console.log("Using currentMove index: ", currentMoveIndex);
+            LoadFEN(fenPositions[currentMoveIndex]);
+        }
+        // window.removeEventListener("keyup", keyUpHandler);
+        // window.addEventListener("keyup", keyUpHandler);
+
+        return (() => {
+            // window.removeEventListener("keyup", keyUpHandler);
+        })
+    }, [currentMoveIndex])
 
     // ! you can't subscribe to the game otherwise you lose the history (undo)
 	useEffect(() => {
@@ -103,60 +112,82 @@ function AnalysisSection({newPGNValue}) {
 
         setHistory(chessHistory);
         history = chessHistory;
-        setCurrentMoveIndex(chessHistory.length - 1)
+        setCurrentMoveIndex(chessHistory.length - 1);
         currentMoveIndex = chessHistory.length - 1;
-        GenerateFenPositions();
 
-        GetAnalysisForMoves();
+        if (history.length > 0) {
+            GenerateFenPositions();
+            GetAnalysisForMoves();
+        }
+        console.log("History length: ", history.length);
 
         // * in case there was one already
-        window.removeEventListener("keyup", keyUpHandler);
-        window.addEventListener("keyup", keyUpHandler);
-
+        // window.removeEventListener("keyup", keyUpHandler);
+        // window.addEventListener("keyup", keyUpHandler);
 
 		return (() => {
-            window.removeEventListener("keyup", keyUpHandler);
+            // window.removeEventListener("keyup", keyUpHandler);
         })
 	}, [newPGNValue]);
 
     return (
-        <Box>
-            <SimpleGrid spacingX={10} columns={[2, 0, 2]}>
+        <div>
+            <SimpleGrid spacingX={10} templateColumns='repeat(2, 1fr)'>
                 {
                     history.map((move, i) => (
 
-                        //* needs to be clickable and return the game to that point in time
-                        <Text
-                            maxWidth={(move.san.length + 3 + i % 10) + 'ch'}
-                            backgroundColor={i === currentMoveIndex ? '#4A5568' : ""}
-                            as="i"
-                            key={i}
-                            cursor="pointer"
-                            onClick={() => PlayMoveAtIndex(i)}
-                            >
-                            {(i % 2 === 0) &&
-                                i / 2 + 1 + ". "
-                            }
-                            {move.san}
+                        <Box
+                            key={i}>
 
-                            {(i % 2 === 1) &&
-                                <br/>
-                            }
+                            <Text
+                                // maxWidth={(move.san.length + 3 + i % 10) + 'ch'}
+                                maxWidth='10ch'
+                                backgroundColor={i === currentMoveIndex ? '#4A5568' : ""}
+                                as="i"
+                                cursor="pointer"
+                                onClick={() => PlayMoveAtIndex(i)}
+                                >
+                                {(i % 2 === 0) &&
+                                    i / 2 + 1 + ". "
+                                }
+                                {move.san}
+
+                                {(i % 2 === 1) &&
+                                    <br/>
+                                }
+                            </Text>
+
+                            {/* //! ask someone how to get this box to span the whole grid */}
                             {
                                 (i === currentMoveIndex) &&
-                                    <Box
-                                        backgroundColor='#4A5568'>
-                                        Hey there, I will show you what's what here !
-                                    </Box>
-                            /* // todo | if the currentMoveIndex === i
-                                // todo | open a box that shows the score of the move you played
-                                // todo | and another box that shows the best move, and the score with the best move
-                             */}
-                        </Text>
+                                <Box
+                                    w="100%"
+                                    background='gray'
+                                    >
+                                        { history[i].san + " "}
+
+                                        {
+                                            positionScores.length > 0 &&
+                                            (i % 2 === 0
+                                            ? (positionScores[i].bestLines[0].score / 100.0)
+                                            : -(positionScores[i].bestLines[0].score / 100.0))
+                                        }
+                                        {
+                                            positionScores.length === 0 &&
+                                            <Spinner/>
+                                        }
+                                </Box>
+                                /*
+                                todo | open a box that shows the score of the move you played
+                                todo | and another box that shows the best move, and the score with the best move
+                                */
+                            }
+                        </Box>
+
                     ))
                 }
             </SimpleGrid>
-        </Box>
+        </div>
     );
 }
 

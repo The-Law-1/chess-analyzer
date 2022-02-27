@@ -46,6 +46,7 @@ export function LoadFEN(fenValue)
 export function LoadPGN(pgnValue)
 {
     // * true or false
+    chess.clear();
     let success = chess.load_pgn(pgnValue);
     updateGame();
     return (success);
