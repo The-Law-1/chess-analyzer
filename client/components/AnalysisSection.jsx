@@ -13,9 +13,9 @@ function AnalysisSection({newPGNValue}) {
     const [fenPositions, setFenPositions] = useState([]);
     const [positionScores, setPositionScores] = useState([]);
 
+    // todo this is not working out, figure out a different way to navigate, buttons or something
     function keyUpHandler(key) {
 
-        // todo double check that you are focused on the window and not on like a text area
 
         console.log("Current move index ", currentMoveIndex);
 
