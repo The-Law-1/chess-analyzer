@@ -8,10 +8,9 @@ function AnalysisSection({newPGNValue}) {
 	const [history, setHistory] = useState([]);
     const [currentMoveIndex, setCurrentMoveIndex] = useState(0);
     const [fenPositions, setFenPositions] = useState([]);
+    const [positionScores, setPositionScores] = useState([]);
 
-
-    // TODO associate each move index with their fen position, so that if you click on it, you can set the position that way
-    // TODO and also you can analyse them by sending each position to the backend
+    // TODO get all the scores for each position by sending the full position array
 
     function keyUpHandler({key}) {
 
@@ -49,6 +48,7 @@ function AnalysisSection({newPGNValue}) {
         setCurrentMoveIndex(i);
         currentMoveIndex = i;
         LoadFEN(fenPositions[i]);
+        console.log(fenPositions[i]);
         // * load fen
     }
 
@@ -113,6 +113,10 @@ function AnalysisSection({newPGNValue}) {
                             {(i % 2 === 1) &&
                                 <br/>
                             }
+                            {/* // todo | if the currentMoveIndex === i
+                                // todo | open a box that shows the score of the move you played
+                                // todo | and another box that shows the best move, and the score with the best move
+                             */}
                         </Text>
                     ))
                 }
