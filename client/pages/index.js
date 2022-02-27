@@ -99,7 +99,7 @@ const Page = () => {
                     )}
                 </Container>
 
-                <Container width='500px' minHeight='600px'  height='600px' backgroundColor='black' overflowY='scroll'>
+                <Container width='600px' minHeight='600px'  height='600px' backgroundColor='black' overflowY='scroll'>
                     <AnalysisSection newPGNValue={analyserProp}/>
                 </Container>
             </Flex>

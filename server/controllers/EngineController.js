@@ -49,24 +49,16 @@ analysePositionArray = async (req, res) =>
     // * call up the engine handler
     const depth = body.hasOwnProperty("maxDepth") ? body.maxDepth : 12;
 
-    let analysedPositions = [];
-
-    for (let i = 0; i < body.fenPositions.length; i++) {
-        const fenPosition = body.fenPositions[i];
-
-        await EngineHandler.AnalysePosition(fenPosition, depth)
-        .then(analysis => {
-            analysedPositions.push(analysis);
+    let fullAnalysis = await EngineHandler.AnalysePositions(body.fenPositions, depth)
+    .then(analysis => {
+        return (res.status(200).json(analysis))
+    })
+    .catch(error => {
+        return res.status(400).json({
+            error,
+            message: 'Could not analyse !',
         })
-        .catch(error => {
-            return res.status(400).json({
-                error,
-                message: 'Could not analyse !',
-            })
-        });
-    }
-
-    return (res.status(200).json(analysedPositions));
+    });
 }
 
 module.exports = {

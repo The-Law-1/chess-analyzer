@@ -73,10 +73,57 @@ async function AnalysePosition(fenPosition, maxDepth=12)
     return (analysis);
 }
 
+async function AnalysePositions(fenPositions, maxDepth = 12)
+{
+    await engine.init();
+    console.log("Engine initialized");
+    await engine.isready();
+    console.log("Engine ready");
+
+    // * set your options here, cf testEngine
+    await engine.setoption("MultiPV", "3");
+
+    console.log("MultiPV set");
+
+    console.log("Depth ", maxDepth);
+
+    let fullResult = [];
+
+    for (let i = 0; i < fenPositions.length; i++) {
+        const fenPosition = fenPositions[i];
+
+
+        // ! catch the bad fen position
+        try {
+            await engine.position(fenPosition);
+        } catch (error) {
+            console.log("Bad fen position ! ", fenPosition);
+
+            throw Error("COuld not set position : " + fenPosition);
+        }
+
+        const result = await engine.go({depth: maxDepth});
+
+        let bestInfo = result.info.slice(-3);
+        // * default is centipawns for the score so get ready to divide and conquer
+        let bestLines = bestInfo.map(info => ({pv: info.pv, score: info.score.value}));
+
+        const analysis = {
+            bestmove: result.bestmove,
+            bestLines,
+        }
+        fullResult.push(analysis);
+    }
+
+    await engine.quit();
+    return (fullResult);
+}
+
 // AnalysePosition("1k5r/2p3pp/2p5/p7/8/P1B1n1rP/1P2B1P1/2R2RK1 w - - 0 25")
 
 
 module.exports = {
     TestEngine,
-    AnalysePosition
+    AnalysePosition,
+    AnalysePositions
 }
