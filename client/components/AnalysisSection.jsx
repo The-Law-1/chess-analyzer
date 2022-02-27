@@ -1,12 +1,14 @@
 import { Box, SimpleGrid, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import {gameSubject, initGame, playMove, undoLastMove, getGameHistory} from '../lib/game';
+import {gameSubject, initGame, playMove, undoLastMove, getGameHistory, resetGame, GetFEN, LoadFEN} from '../lib/game';
 
 function AnalysisSection({newPGNValue}) {
 
 	const [history, setHistory] = useState([]);
     const [currentMoveIndex, setCurrentMoveIndex] = useState(0);
+    const [fenPositions, setFenPositions] = useState([]);
+
 
     // TODO associate each move index with their fen position, so that if you click on it, you can set the position that way
     // TODO and also you can analyse them by sending each position to the backend
@@ -16,12 +18,13 @@ function AnalysisSection({newPGNValue}) {
         // todo double check that you are focused on the window and not on like a text area
 
         if (key === "ArrowLeft") {
-
             if (currentMoveIndex > -1) {
                 currentMoveIndex -= 1;
-                // ? not sure how useful it is to setCurrentMoveIndex this way
-                setCurrentMoveIndex(currentMoveIndex);
-                undoLastMove();
+                PlayMoveAtIndex(currentMoveIndex);
+
+                // // ? not sure how useful it is to setCurrentMoveIndex this way
+                // setCurrentMoveIndex(currentMoveIndex);
+                // undoLastMove();
             }
 
         } else if (key === "ArrowRight") {
@@ -30,9 +33,10 @@ function AnalysisSection({newPGNValue}) {
 
                 currentMoveIndex++;
 
-                // ? not sure how useful it is to setCurrentMoveIndex this way
-                setCurrentMoveIndex(currentMoveIndex);
-                playMove(history[currentMoveIndex].san);
+                PlayMoveAtIndex(currentMoveIndex);
+                // // ? not sure how useful it is to setCurrentMoveIndex this way
+                // setCurrentMoveIndex(currentMoveIndex);
+                // playMove(history[currentMoveIndex].san);
             }
             // * a little trickier, play the next move in store
             // * that means keeping track of the current index
@@ -40,8 +44,32 @@ function AnalysisSection({newPGNValue}) {
         }
     }
 
-    // ! you can't subscribe to the game otherwise you lose the history (undo)
+    function PlayMoveAtIndex(i)
+    {
+        setCurrentMoveIndex(i);
+        currentMoveIndex = i;
+        LoadFEN(fenPositions[i]);
+        // * load fen
+    }
 
+    function GenerateFenPositions()
+    {
+        // * reset the game to zero
+        resetGame();
+        // * loop over the history
+        for (let i = 0; i < history.length; i++) {
+            const move = history[i].san;
+
+            // * play each move, and get the fen each time
+            playMove(move);
+
+            // * get the fen notation
+            fenPositions[i] = GetFEN();
+            setFenPositions(fenPositions);
+        }
+    }
+
+    // ! you can't subscribe to the game otherwise you lose the history (undo)
 	useEffect(() => {
         initGame();
 
@@ -51,6 +79,7 @@ function AnalysisSection({newPGNValue}) {
         history = chessHistory;
         setCurrentMoveIndex(chessHistory.length - 1)
         currentMoveIndex = chessHistory.length - 1;
+        GenerateFenPositions();
 
         // * in case there was one already
         window.removeEventListener("keyup", keyUpHandler);
@@ -81,8 +110,6 @@ function AnalysisSection({newPGNValue}) {
                     ))
                 }
             </SimpleGrid>
-
-
         </Box>
     );
 }

@@ -36,12 +36,24 @@ const chess = new Chess();
 export const gameSubject = new BehaviorSubject()
 
 
+export function LoadFEN(fenValue)
+{
+    let success = chess.load(fenValue);
+    updateGame();
+    return (success);
+}
+
 export function LoadPGN(pgnValue)
 {
     // * true or false
     let success = chess.load_pgn(pgnValue);
     updateGame();
     return (success);
+}
+
+export function GetFEN()
+{
+    return (chess.fen());
 }
 
 export function initGame() {
