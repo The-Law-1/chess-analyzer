@@ -97,7 +97,14 @@ function AnalysisSection({newPGNValue}) {
                     history.map((move, i) => (
 
                         //* needs to be clickable and return the game to that point in time
-                        <Text maxWidth={(move.san.length + 3 + i % 10) + 'ch'} backgroundColor={i === currentMoveIndex ? '#4A5568' : ""} as="i" key={i} >
+                        <Text
+                            maxWidth={(move.san.length + 3 + i % 10) + 'ch'}
+                            backgroundColor={i === currentMoveIndex ? '#4A5568' : ""}
+                            as="i"
+                            key={i}
+                            cursor="pointer"
+                            onClick={() => PlayMoveAtIndex(i)}
+                            >
                             {(i % 2 === 0) &&
                                 i + ". "
                             }
