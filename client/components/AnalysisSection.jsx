@@ -13,33 +13,6 @@ function AnalysisSection({newPGNValue}) {
     const [fenPositions, setFenPositions] = useState([]);
     const [positionScores, setPositionScores] = useState([]);
 
-    // todo this is not working out, figure out a different way to navigate, buttons or something
-    function keyUpHandler(key) {
-
-
-        console.log("Current move index ", currentMoveIndex);
-
-        if (key === "ArrowLeft") {
-            if (currentMoveIndex > -1) {
-                PlayMoveAtIndex(currentMoveIndex - 1);
-
-                // // ? not sure how useful it is to setCurrentMoveIndex this way
-                // setCurrentMoveIndex(currentMoveIndex);
-                // undoLastMove();
-            }
-
-        } else if (key === "ArrowRight") {
-
-            if (currentMoveIndex < history.length - 1) {
-
-                PlayMoveAtIndex(currentMoveIndex + 1);
-                // // ? not sure how useful it is to setCurrentMoveIndex this way
-                // setCurrentMoveIndex(currentMoveIndex);
-                // playMove(history[currentMoveIndex].san);
-            }
-        }
-    }
-
     function PlayMoveAtIndex(i)
     {
         if (i < history.length && i >= 0) {
@@ -179,7 +152,7 @@ function AnalysisSection({newPGNValue}) {
                                         <br/>
                                         {
                                             positionScores.length > 0 &&
-                                            positionScores[i].bestmove
+                                            "best: " + positionScores[i].bestmove
                                         }
                                         {
                                             positionScores.length === 0 &&
