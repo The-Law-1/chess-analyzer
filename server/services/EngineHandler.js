@@ -80,8 +80,9 @@ async function AnalysePositions(fenPositions, maxDepth = 12)
     await engine.isready();
     console.log("Engine ready");
 
+    let multiPVValue = 3;
     // * set your options here, cf testEngine
-    await engine.setoption("MultiPV", "3");
+    await engine.setoption("MultiPV", `${multiPVValue}`);
 
     console.log("MultiPV set");
 
@@ -90,29 +91,43 @@ async function AnalysePositions(fenPositions, maxDepth = 12)
     let fullResult = [];
 
     for (let i = 0; i < fenPositions.length; i++) {
-        const fenPosition = fenPositions[i];
+        if (i === 0) {
+            fullResult.push({
+                bestmove: "e2e4",
+                bestLines: [{
+                    pv: [],
+                    score: 0.2
+                }]
+            });
+            // * return equal score and bestMove e2e4
+        } else {
+
+            const fenPosition = fenPositions[i - 1];
 
 
-        // ! catch the bad fen position
-        try {
-            await engine.position(fenPosition);
-        } catch (error) {
-            console.log("Bad fen position ! ", fenPosition);
+            // ! catch the bad fen position
+            try {
+                await engine.position(fenPosition);
+            } catch (error) {
+                console.log("Bad fen position ! ", fenPosition);
 
-            throw Error("COuld not set position : " + fenPosition);
+                throw Error("COuld not set position : " + fenPosition);
+            }
+
+            const result = await engine.go({depth: maxDepth});
+
+            let bestInfo = result.info.slice(-multiPVValue);
+            // * default is centipawns for the score so get ready to divide and conquer
+            let bestLines = bestInfo.map(info => ({pv: info.pv, score: info.score.value}));
+
+            const analysis = {
+                bestmove: result.bestmove,
+                bestLines,
+            }
+            fullResult.push(analysis);
         }
+        console.log(`Done with move ${i}`);
 
-        const result = await engine.go({depth: maxDepth});
-
-        let bestInfo = result.info.slice(-3);
-        // * default is centipawns for the score so get ready to divide and conquer
-        let bestLines = bestInfo.map(info => ({pv: info.pv, score: info.score.value}));
-
-        const analysis = {
-            bestmove: result.bestmove,
-            bestLines,
-        }
-        fullResult.push(analysis);
     }
 
     await engine.quit();

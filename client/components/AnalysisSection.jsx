@@ -1,5 +1,5 @@
-import { Box, Button, Center, GridItem, IconButton, position, SimpleGrid, Spinner, Text } from '@chakra-ui/react';
-import { ChevronRightIcon } from '@chakra-ui/icons'
+import { Box, Button, Center, Flex, GridItem, IconButton, position, SimpleGrid, Spinner, Text } from '@chakra-ui/react';
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
 
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -42,8 +42,11 @@ function AnalysisSection({newPGNValue}) {
 
     function PlayMoveAtIndex(i)
     {
-        setCurrentMoveIndex(i);
-        currentMoveIndex = i;
+        if (i < history.length && i >= 0) {
+
+            setCurrentMoveIndex(i);
+            currentMoveIndex = i;
+        }
         // useeffect will load the appropriate fen
     }
 
@@ -132,7 +135,7 @@ function AnalysisSection({newPGNValue}) {
 
     return (
         <div>
-            <SimpleGrid spacingX={10} templateColumns='repeat(2, 1fr)'>
+            <SimpleGrid spacingX={10} height='500px' templateColumns='repeat(2, 1fr)' overflowY='scroll'>
                 {
                     history.map((move, i) => (
 
@@ -144,6 +147,7 @@ function AnalysisSection({newPGNValue}) {
                                 maxWidth='10ch'
                                 backgroundColor={i === currentMoveIndex ? '#4A5568' : ""}
                                 as="i"
+                                scrollBehavior="smooth"
                                 cursor="pointer"
                                 onClick={() => PlayMoveAtIndex(i)}
                                 >
@@ -172,13 +176,17 @@ function AnalysisSection({newPGNValue}) {
                                             ? (positionScores[i].bestLines[0].score / 100.0)
                                             : -(positionScores[i].bestLines[0].score / 100.0))
                                         }
+                                        <br/>
+                                        {
+                                            positionScores.length > 0 &&
+                                            positionScores[i].bestmove
+                                        }
                                         {
                                             positionScores.length === 0 &&
                                             <Spinner/>
                                         }
                                 </Box>
                                 /*
-                                todo | open a box that shows the score of the move you played
                                 todo | and another box that shows the best move, and the score with the best move
                                 */
                             }
@@ -187,6 +195,19 @@ function AnalysisSection({newPGNValue}) {
                     ))
                 }
             </SimpleGrid>
+            <Flex>
+
+                <IconButton
+                    icon={<ChevronLeftIcon/>}
+                    onClick={() => PlayMoveAtIndex(currentMoveIndex - 1)}
+                    >
+                </IconButton>
+                <IconButton
+                    icon={<ChevronRightIcon/>}
+                    onClick={() => PlayMoveAtIndex(currentMoveIndex + 1)}
+                    >
+                </IconButton>
+            </Flex>
         </div>
     );
 }
