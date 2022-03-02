@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, GridItem, IconButton, position, SimpleGrid, Spinner, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, GridItem, IconButton, position, SimpleGrid, Slider, SliderFilledTrack, SliderTrack, Spinner, Text, Tooltip } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
 
 import React, { useEffect, useState } from 'react';
@@ -107,81 +107,101 @@ function AnalysisSection({newPGNValue}) {
 	}, [newPGNValue]);
 
     return (
-        <div>
-            <SimpleGrid spacingX={10} height='500px' templateColumns='repeat(2, 1fr)' overflowY='scroll'>
-                {
-                    history.map((move, i) => (
-
-                        <Box
-                            key={i}>
-
-                            <Text
-                                // maxWidth={(move.san.length + 3 + i % 10) + 'ch'}
-                                maxWidth='10ch'
-                                backgroundColor={i === currentMoveIndex ? '#4A5568' : ""}
-                                as="i"
-                                scrollBehavior="smooth"
-                                cursor="pointer"
-                                onClick={() => PlayMoveAtIndex(i)}
-                                >
-                                {(i % 2 === 0) &&
-                                    i / 2 + 1 + ". "
-                                }
-                                {move.san}
-
-                                {(i % 2 === 1) &&
-                                    <br/>
-                                }
-                            </Text>
-
-                            {/* //! ask someone how to get this box to span the whole grid */}
-                            {
-                                (i === currentMoveIndex) &&
-                                <Box
-                                    w="100%"
-                                    background='gray'
-                                    >
-                                        { history[i].san + " "}
-
-                                        {
-                                            positionScores.length > 0 &&
-                                            (i % 2 === 0
-                                            ? (positionScores[i].bestLines[0].score / 100.0)
-                                            : -(positionScores[i].bestLines[0].score / 100.0))
-                                        }
-                                        <br/>
-                                        {
-                                            positionScores.length > 0 &&
-                                            "best: " + positionScores[i].bestmove
-                                        }
-                                        {
-                                            positionScores.length === 0 &&
-                                            <Spinner/>
-                                        }
-                                </Box>
-                                /*
-                                todo | and another box that shows the best move, and the score with the best move
-                                */
-                            }
-                        </Box>
-
-                    ))
-                }
-            </SimpleGrid>
+        <>
             <Flex>
+                <div>
+                    <SimpleGrid spacingX={10} height='500px'width='300px' templateColumns='repeat(2, 1fr)' overflowY='scroll'>
+                        {
+                            history.map((move, i) => (
 
-                <IconButton
-                    icon={<ChevronLeftIcon/>}
-                    onClick={() => PlayMoveAtIndex(currentMoveIndex - 1)}
-                    >
-                </IconButton>
-                <IconButton
-                    icon={<ChevronRightIcon/>}
-                    onClick={() => PlayMoveAtIndex(currentMoveIndex + 1)}
-                    >
-                </IconButton>
+                                <Box
+                                    key={i}>
+
+                                    <Text
+                                        // maxWidth={(move.san.length + 3 + i % 10) + 'ch'}
+                                        maxWidth='10ch'
+                                        backgroundColor={i === currentMoveIndex ? '#4A5568' : ""}
+                                        as="i"
+                                        scrollBehavior="smooth"
+                                        cursor="pointer"
+                                        onClick={() => PlayMoveAtIndex(i)}
+                                        >
+                                        {(i % 2 === 0) &&
+                                            i / 2 + 1 + ". "
+                                        }
+                                        {move.san}
+
+                                        {(i % 2 === 1) &&
+                                            <br/>
+                                        }
+                                    </Text>
+
+                                    {/* //! ask someone how to get this box to span the whole grid */}
+                                    {
+                                        (i === currentMoveIndex) &&
+                                        <Box
+                                            w="100%"
+                                            background='gray'
+                                            >
+                                                { history[i].san + " "}
+
+                                                {
+                                                    positionScores.length > 0 &&
+                                                    (i % 2 === 0
+                                                    ? (positionScores[i].bestLines[0].score / 100.0)
+                                                    : -(positionScores[i].bestLines[0].score / 100.0))
+                                                }
+                                                <br/>
+                                                {
+                                                    positionScores.length > 0 &&
+                                                    "best: " + positionScores[i].bestmove
+                                                }
+                                                {
+                                                    positionScores.length === 0 &&
+                                                    <Spinner/>
+                                                }
+                                        </Box>
+                                        /*
+                                        todo | and another box that shows the best move, and the score with the best move
+                                        */
+                                    }
+                                </Box>
+
+                            ))
+                        }
+                    </SimpleGrid>
+                    <Flex>
+
+                        <IconButton
+                            icon={<ChevronLeftIcon/>}
+                            onClick={() => PlayMoveAtIndex(currentMoveIndex - 1)}
+                            >
+                        </IconButton>
+                        <IconButton
+                            icon={<ChevronRightIcon/>}
+                            onClick={() => PlayMoveAtIndex(currentMoveIndex + 1)}
+                            >
+                        </IconButton>
+                    </Flex>
+                </div>
+                {/* // todo get this thing done */}
+                {/* // todo or just use a div like in the portfolio */}
+                <Slider
+                    colorScheme='pink'
+                    defaultValue={30}
+                    orientation='vertical'
+                    minH='500'>
+                        <SliderTrack
+                        minW='30'>
+                            <SliderFilledTrack/>
+                        </SliderTrack>
+                        {/* <Tooltip>
+                        </Tooltip> */}
+                </Slider>
+
             </Flex>
-        </div>
+
+        </>
     );
 }
 
