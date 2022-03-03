@@ -118,7 +118,7 @@ async function AnalysePositions(fenPositions, maxDepth = 12)
 
             let bestInfo = result.info.slice(-multiPVValue);
             // * default is centipawns for the score so get ready to divide and conquer
-            let bestLines = bestInfo.map(info => ({pv: info.pv, score: info.score.value}));
+            let bestLines = bestInfo.map(info => ({pv: info.pv, score: i % 2 === 0 ? info.score.value : -info.score.value}));
 
             const analysis = {
                 bestmove: result.bestmove,

@@ -12,7 +12,7 @@ function AnalysisBar({score}) {
     // * from -20 to 20, to 0 - 100
     function NormalizeScore(value)
     {
-        let newVal = mapValue(value, -20, 20, 0, 100);
+        let newVal = mapValue(value, -20, 20, 100, 0);
         return (newVal);
     }
 

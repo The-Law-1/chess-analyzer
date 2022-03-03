@@ -149,9 +149,7 @@ function AnalysisSection({newPGNValue}) {
 
                                                 {
                                                     positionScores.length > 0 &&
-                                                    (i % 2 === 0
-                                                    ? (positionScores[i].bestLines[0].score / 100.0)
-                                                    : -(positionScores[i].bestLines[0].score / 100.0))
+                                                    (positionScores[i].bestLines[0].score / 100.0)
                                                 }
                                                 <br/>
                                                 {
