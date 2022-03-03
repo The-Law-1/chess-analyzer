@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {gameSubject, initGame, playMove, undoLastMove, getGameHistory, resetGame, GetFEN, LoadFEN} from '../lib/game';
 import { analysePositions } from '../api/EngineApi'
+import AnalysisBar from './AnalysisBar';
 
 function AnalysisSection({newPGNValue}) {
 
@@ -106,6 +107,7 @@ function AnalysisSection({newPGNValue}) {
         })
 	}, [newPGNValue]);
 
+    // todo decompose this into sub-components
     return (
         <>
             <Flex>
@@ -184,20 +186,12 @@ function AnalysisSection({newPGNValue}) {
                         </IconButton>
                     </Flex>
                 </div>
-                {/* // todo get this thing done */}
-                {/* // todo or just use a div like in the portfolio */}
-                <Slider
-                    colorScheme='pink'
-                    defaultValue={30}
-                    orientation='vertical'
-                    minH='500'>
-                        <SliderTrack
-                        minW='30'>
-                            <SliderFilledTrack/>
-                        </SliderTrack>
-                        {/* <Tooltip>
-                        </Tooltip> */}
-                </Slider>
+                <AnalysisBar
+                    score={
+                        positionScores.length > 0
+                        ? positionScores[currentMoveIndex].bestLines[0].score / 100.0
+                        : 0
+                    }/>
 
             </Flex>
 
