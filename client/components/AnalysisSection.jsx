@@ -20,8 +20,75 @@ function AnalysisSection({newPGNValue}) {
 
             setCurrentMoveIndex(i);
             currentMoveIndex = i;
+            console.log("Full move data ", history[i]);
         }
         // useeffect will load the appropriate fen
+    }
+
+    // todo calculate if it was a good/bad/best move | returns html code ?
+    function EvaluateMove(moveIndex)
+    {
+        if (positionScores.length === 0) {
+            return ("");
+        }
+        if (moveIndex === 0) {
+            return ("ok");
+        }
+        let playerColor = moveIndex % 2 === 0 ? "white" : "black";
+        // * get the move
+        let move = history[moveIndex].from + history[moveIndex].to;
+        // * get the best move
+        let bestMove = positionScores[moveIndex].bestmove;
+        // * get the current move score
+        let moveScore = positionScores[moveIndex].bestLines[0].score / 100.0;
+        // * get the previous move score
+        let prevMoveScore = positionScores[moveIndex - 1].bestLines[0].score / 100.0;
+
+        let discrepancy = prevMoveScore - moveScore;
+
+        console.log("Discrepancy for move index " + moveIndex + " " + discrepancy);
+
+        // * if negative and player === white -> good else: bad
+
+        let qualifier = 0;
+
+        if (playerColor === "white") {
+            qualifier = discrepancy < 0 ? 1 : -1;
+        } else {
+            qualifier = discrepancy > 0 ? 1 : -1;
+        }
+
+        if (move === bestMove) {
+            return (
+                <Text
+                    color="green">
+                        {" "} is the best move !
+                </Text>
+            )
+        }
+
+        if (Math.abs(discrepancy) < 0.5) {
+            // * it was an okay move either way
+            let description = qualifier < 0 ? "not great" : "not bad";
+            return (
+                <Text
+                    color="yellow">
+                    {" "} is an okay move {" " + description}
+                </Text>
+            );
+        }
+
+        if (Math.abs(discrepancy) > 1) {
+            // * it was either good or bad
+            let description = qualifier < 0 ? "bad move..." : "good move !";
+
+            return (
+                <Text
+                    color={qualifier < 0 ? "red" : "green"}>
+                    {" "} is a {" " + description}
+                </Text>
+            );
+        }
     }
 
     function GenerateFenPositions()
@@ -73,11 +140,8 @@ function AnalysisSection({newPGNValue}) {
             console.log("Using currentMove index: ", currentMoveIndex);
             LoadFEN(fenPositions[currentMoveIndex]);
         }
-        // window.removeEventListener("keyup", keyUpHandler);
-        // window.addEventListener("keyup", keyUpHandler);
 
         return (() => {
-            // window.removeEventListener("keyup", keyUpHandler);
         })
     }, [currentMoveIndex])
 
@@ -132,6 +196,8 @@ function AnalysisSection({newPGNValue}) {
                                             i / 2 + 1 + ". "
                                         }
                                         {move.san}
+                                        {(i === currentMoveIndex && positionScores.length > 0) && 
+                                            EvaluateMove(i)}
 
                                         {(i % 2 === 1) &&
                                             <br/>
@@ -161,9 +227,6 @@ function AnalysisSection({newPGNValue}) {
                                                     <Spinner/>
                                                 }
                                         </Box>
-                                        /*
-                                        todo | and another box that shows the best move, and the score with the best move
-                                        */
                                     }
                                 </Box>
 
