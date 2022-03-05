@@ -3,7 +3,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
 
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import {gameSubject, initGame, playMove, undoLastMove, getGameHistory, resetGame, GetFEN, LoadFEN} from '../lib/game';
+import {gameSubject, initGame, playMove, undoLastMove, getGameHistory, resetGame, GetFEN, LoadFEN, move} from '../lib/game';
 import { analysePositions } from '../api/EngineApi'
 import AnalysisBar from './AnalysisBar';
 
@@ -13,6 +13,7 @@ function AnalysisSection({newPGNValue}) {
     const [currentMoveIndex, setCurrentMoveIndex] = useState(0);
     const [fenPositions, setFenPositions] = useState([]);
     const [positionScores, setPositionScores] = useState([]);
+    const [moveEvals, setMoveEvals] = useState([]);
 
     function PlayMoveAtIndex(i)
     {
@@ -22,17 +23,91 @@ function AnalysisSection({newPGNValue}) {
             currentMoveIndex = i;
             console.log("Full move data ", history[i]);
         }
-        // useeffect will load the appropriate fen
     }
 
-    // todo calculate if it was a good/bad/best move | returns html code ?
+
+    function ShowPlayerSummary(side)
+    {
+        let bestMoves = 0;
+        let greatMoves = 0;
+        let blunders = 0;
+        let inaccuracies = 0;
+        let goodMoves = 0;
+
+        for (let i = 0; i < moveEvals.length; i++) {
+            if (side === "White" && i % 2 === 1)
+                continue;
+            if (side === "Black" && i % 2 === 0)
+                continue;
+
+            const moveEval = moveEvals[i];
+            if (moveEval === null || moveEval === undefined)
+                continue;
+
+            switch (moveEval.evaluation) {
+                case "bestMove":
+                    bestMoves++;
+                    break;
+                case "inaccuracy":
+                    inaccuracies++;
+                    break;
+                case "good":
+                    goodMoves++;
+                    break;
+                case "blunder":
+                    blunders++;
+                    break;
+                case "great":
+                    greatMoves++;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // * texts or spans
+        return (
+            <div>
+                <Text color="white">
+                    {side} played {" "}
+                </Text>
+                <Text color="red">
+                    {blunders + " "} blunders {" "}
+                </Text>
+                <Text color="yellow">
+                    {inaccuracies + " "} inaccuracies {" "}
+                </Text>
+                <Text color="green.100">
+                    {goodMoves + " "} good moves {" "}
+                </Text>
+                <Text color="green.200">
+                    {greatMoves + " "} great moves {" "}
+                </Text>
+                <Text color="green.300">
+                    {bestMoves + " "} best moves
+                </Text>
+            </div>
+        )
+    }
+
+    function EvaluateAllMoves()
+    {
+        // * loop over the positions and evaluate each one, save the results in the object
+        for (let i = 0; i < history.length; i++) {
+            let moveEvaluationObject = EvaluateMove(i);
+
+            moveEvals[i] = moveEvaluationObject;
+            setMoveEvals(moveEvals);
+        }
+    }
+
     function EvaluateMove(moveIndex)
     {
         if (positionScores.length === 0) {
-            return ("");
+            return (null);
         }
         if (moveIndex === 0) {
-            return ("ok");
+            return (null);
         }
         let playerColor = moveIndex % 2 === 0 ? "white" : "black";
         // * get the move
@@ -59,34 +134,43 @@ function AnalysisSection({newPGNValue}) {
         }
 
         if (move === bestMove) {
-            return (
-                <Text
-                    color="green">
-                        {" "} is the best move !
-                </Text>
+            return ({
+                    element:
+                        <Text
+                        color="green">
+                                {" "} is the best move !
+                        </Text>,
+                    evaluation: "bestMove"
+                }
             )
         }
 
         if (Math.abs(discrepancy) < 0.5) {
             // * it was an okay move either way
             let description = qualifier < 0 ? "not great" : "not bad";
-            return (
-                <Text
+            return ({
+                    element:
+                    <Text
                     color="yellow">
-                    {" "} is an okay move {" " + description}
-                </Text>
+                        {" "} is an okay move {" " + description}
+                    </Text>,
+                    evaluation: qualifier < 0 ? "inaccuracy" : "good"
+                }
             );
         }
 
         if (Math.abs(discrepancy) > 1) {
             // * it was either good or bad
-            let description = qualifier < 0 ? "bad move..." : "good move !";
+            let description = qualifier < 0 ? "bad move..." : "good move";
 
-            return (
-                <Text
+            return ({
+                    element:
+                    <Text
                     color={qualifier < 0 ? "red" : "green"}>
                     {" "} is a {" " + description}
-                </Text>
+                    </Text>,
+                    evaluation: qualifier < 0 ? "blunder" : "great"
+                }
             );
         }
     }
@@ -158,7 +242,10 @@ function AnalysisSection({newPGNValue}) {
 
         if (history.length > 0) {
             GenerateFenPositions();
-            GetAnalysisForMoves();
+            GetAnalysisForMoves()
+            .then(() => {
+                EvaluateAllMoves();
+            })
         }
         console.log("History length: ", history.length);
 
@@ -196,8 +283,8 @@ function AnalysisSection({newPGNValue}) {
                                             i / 2 + 1 + ". "
                                         }
                                         {move.san}
-                                        {(i === currentMoveIndex && positionScores.length > 0) && 
-                                            EvaluateMove(i)}
+                                        {(i === currentMoveIndex && moveEvals.length > 0 && moveEvals[i] !== null && moveEvals[i] !== undefined) && 
+                                            moveEvals[i].element}
 
                                         {(i % 2 === 1) &&
                                             <br/>
@@ -233,18 +320,32 @@ function AnalysisSection({newPGNValue}) {
                             ))
                         }
                     </SimpleGrid>
-                    <Flex>
 
+                    {/* // todo show the total okay/good/bad/best moves */}
+                    <Flex>
                         <IconButton
+                            color="gray.100"
                             icon={<ChevronLeftIcon/>}
                             onClick={() => PlayMoveAtIndex(currentMoveIndex - 1)}
                             >
                         </IconButton>
                         <IconButton
+                            color="gray.100"
                             icon={<ChevronRightIcon/>}
                             onClick={() => PlayMoveAtIndex(currentMoveIndex + 1)}
                             >
                         </IconButton>
+                    </Flex>
+                    <Flex>
+                        <>
+
+                            {moveEvals.length > 0 &&
+                            ShowPlayerSummary("White")}
+                        </>
+                        <>
+                            {moveEvals.length > 0 &&
+                            ShowPlayerSummary("Black")}
+                        </>
                     </Flex>
                 </div>
                 <AnalysisBar
