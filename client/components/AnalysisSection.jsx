@@ -21,7 +21,6 @@ function AnalysisSection({newPGNValue}) {
 
             setCurrentMoveIndex(i);
             currentMoveIndex = i;
-            console.log("Full move data ", history[i]);
         }
     }
 
@@ -99,6 +98,7 @@ function AnalysisSection({newPGNValue}) {
             moveEvals[i] = moveEvaluationObject;
             setMoveEvals(moveEvals);
         }
+        PlayMoveAtIndex(0);
     }
 
     function EvaluateMove(moveIndex)
@@ -219,13 +219,27 @@ function AnalysisSection({newPGNValue}) {
         })
     }
 
+    function keyUpHandler({key})
+    {
+        if (key === "ArrowRight") {
+            PlayMoveAtIndex(currentMoveIndex + 1);
+        } else if (key === "ArrowLeft") {
+            PlayMoveAtIndex(currentMoveIndex - 1);
+        }
+    }
+
     useEffect(() => {
         if (fenPositions.length > 0) {
             console.log("Using currentMove index: ", currentMoveIndex);
             LoadFEN(fenPositions[currentMoveIndex]);
         }
 
+        // * in case there was one already
+        window.removeEventListener("keyup", keyUpHandler);
+        window.addEventListener("keyup", keyUpHandler);
+
         return (() => {
+            window.removeEventListener("keyup", keyUpHandler);
         })
     }, [currentMoveIndex])
 
@@ -263,6 +277,22 @@ function AnalysisSection({newPGNValue}) {
         <>
             <Flex>
                 <div>
+                    <Flex justifyContent='space-between'>
+                        {(history.length > 0 && moveEvals.length === 0) &&
+                            <Spinner/>
+                        }
+                        {(history.length > 0 && moveEvals.length === 0) &&
+                            <Spinner/>
+                        }
+                        <>
+                            {moveEvals.length > 0 &&
+                            ShowPlayerSummary("White")}
+                        </>
+                        <>
+                            {moveEvals.length > 0 &&
+                            ShowPlayerSummary("Black")}
+                        </>
+                    </Flex>
                     <SimpleGrid spacingX={10} height='500px'width='300px' templateColumns='repeat(2, 1fr)' overflowY='scroll'>
                         {
                             history.map((move, i) => (
@@ -283,8 +313,6 @@ function AnalysisSection({newPGNValue}) {
                                             i / 2 + 1 + ". "
                                         }
                                         {move.san}
-                                        {(i === currentMoveIndex && moveEvals.length > 0 && moveEvals[i] !== null && moveEvals[i] !== undefined) && 
-                                            moveEvals[i].element}
 
                                         {(i % 2 === 1) &&
                                             <br/>
@@ -295,9 +323,12 @@ function AnalysisSection({newPGNValue}) {
                                     {
                                         (i === currentMoveIndex) &&
                                         <Box
-                                            w="100%"
+                                            w="200%"
                                             background='gray'
                                             >
+                                                {(i === currentMoveIndex && moveEvals.length > 0 && moveEvals[i] !== null && moveEvals[i] !== undefined) && 
+                                                moveEvals[i].element}
+
                                                 { history[i].san + " "}
 
                                                 {
@@ -336,21 +367,11 @@ function AnalysisSection({newPGNValue}) {
                             >
                         </IconButton>
                     </Flex>
-                    <Flex>
-                        <>
 
-                            {moveEvals.length > 0 &&
-                            ShowPlayerSummary("White")}
-                        </>
-                        <>
-                            {moveEvals.length > 0 &&
-                            ShowPlayerSummary("Black")}
-                        </>
-                    </Flex>
                 </div>
                 <AnalysisBar
                     score={
-                        positionScores.length > 0
+                        (positionScores.length > 0 && currentMoveIndex !== -1)
                         ? positionScores[currentMoveIndex].bestLines[0].score / 100.0
                         : 0
                     }/>
