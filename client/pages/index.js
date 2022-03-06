@@ -62,22 +62,24 @@ const Page = () => {
                 </Button>
             </Box>
 
-            <Flex align='center' w='container.lg'>
+            <Flex align='center'>
+                {/* // * switch side button, room for time also probably  */}
                 <Box>
-                    <Text>
+                    {/* <Text>
                         Time1
-                    </Text>
+                    </Text> */}
                     <Button
                         _focus={{outline:"none"}}
                         onClick={() => flipBoard()}>
                         switch sides
                     </Button>
-                    <Text>
+                    {/* <Text>
                         Time2
-                    </Text>
+                    </Text> */}
                 </Box>
 
-                <Container justifyContent backgroundColor='rgb(34,34,34)' maxW='600px'>
+                {/* // * contains the board */}
+                <Container backgroundColor='rgb(34,34,34)' minW='600px' maxW='600px'>
                     {/* //* board-container */}
                     <Box maxWidth='600px' h='600px'>
                         {/* {boardElement} */}
@@ -99,7 +101,7 @@ const Page = () => {
                     )}
                 </Container>
 
-                <Container width='600px' minHeight='600px'  height='600px' backgroundColor='black'>
+                <Container width='600px' backgroundColor='black'>
                     <AnalysisSection newPGNValue={analyserProp}/>
                 </Container>
             </Flex>
