@@ -8,6 +8,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - run: cd client
-    - run: echo "NEXT_PUBLIC_SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env.local
-    - run: npm run build
+    - run: >
+        cd client
+        && npm install --silent
+        && echo "NEXT_PUBLIC_SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env.local
+        && npm run build
