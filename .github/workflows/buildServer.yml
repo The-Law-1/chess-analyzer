@@ -1,4 +1,4 @@
-name: buildClient
+name: buildServer
 
 on: [push]
 
