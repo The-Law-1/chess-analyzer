@@ -16,11 +16,11 @@ async function TestEngine()
     await engine.isready();
 
     // await engine.position("rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3");
-    console.log("engine ready", engine.id, engine.options);
+    // console.log("engine ready", engine.id, engine.options);
     const result = await engine.go({depth: 10, searchmoves: 1});
 
-    console.log('Result ', result);
-    console.log('Score ', result.info[1].score);
+    // console.log('Result ', result);
+    // console.log('Score ', result.info[1].score);
 
     await engine.quit();
 }
@@ -50,7 +50,7 @@ async function AnalysePosition(fenPosition, maxDepth=12)
     } catch (error) {
         console.log("Bad fen position ! ", fenPosition);
 
-        throw Error("COuld not set position : " + fenPosition);
+        throw Error("Could not set position : " + fenPosition);
     }
 
     console.log("Launching engine", engine.id, engine.options);
@@ -126,8 +126,7 @@ async function AnalysePositions(fenPositions, maxDepth = 12)
             }
             fullResult.push(analysis);
         }
-        console.log(`Done with move ${i}`);
-
+        // console.log(`Done with move ${i}`);
     }
 
     await engine.quit();

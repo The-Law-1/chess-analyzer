@@ -121,7 +121,7 @@ function AnalysisSection({newPGNValue}) {
 
         let discrepancy = prevMoveScore - moveScore;
 
-        console.log("Discrepancy for move index " + moveIndex + " " + discrepancy);
+        // console.log("Discrepancy for move index " + moveIndex + " " + discrepancy);
 
         // * if negative and player === white -> good else: bad
 
@@ -209,7 +209,6 @@ function AnalysisSection({newPGNValue}) {
                 positionScores = res.data;
                 setPositionScores(res.data);
                 console.log("Got analysis': ", res);
-                console.log(positionScores[0].bestLines);
             } else {
                 alert("Could not retrieve analysis");
             }
@@ -230,7 +229,6 @@ function AnalysisSection({newPGNValue}) {
 
     useEffect(() => {
         if (fenPositions.length > 0) {
-            console.log("Using currentMove index: ", currentMoveIndex);
             LoadFEN(fenPositions[currentMoveIndex]);
         }
 
@@ -261,14 +259,9 @@ function AnalysisSection({newPGNValue}) {
                 EvaluateAllMoves();
             })
         }
-        console.log("History length: ", history.length);
 
-        // * in case there was one already
-        // window.removeEventListener("keyup", keyUpHandler);
-        // window.addEventListener("keyup", keyUpHandler);
 
 		return (() => {
-            // window.removeEventListener("keyup", keyUpHandler);
         })
 	}, [newPGNValue]);
 

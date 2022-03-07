@@ -60,8 +60,6 @@ const Board = ({board, turn, flipView}) => {
         // * call the game library
         let moves = getLegalMoves(fromPosition);
         // * remove the letter notation so you just get the square
-        console.log("Full legal: ", moves);
-
 
         moves = moves.map((val, i) => {
 
@@ -85,8 +83,6 @@ const Board = ({board, turn, flipView}) => {
         // * updateLegalMoves
         legalMoves = moves;
         setLegalMoves(moves);
-        // ! not sure how soon this updates/rebuilds
-        console.log("All legal moves in position: ", moves);
     }
 
     return (

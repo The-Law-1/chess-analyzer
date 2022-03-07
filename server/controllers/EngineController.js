@@ -12,7 +12,7 @@ analysePosition = async (req, res) =>
         })
     }
 
-    console.log("Got body; ", body);
+    // console.log("Got body; ", body);
 
     // * call up the engine handler
     const fenPosition = body.fenPosition;
@@ -44,7 +44,7 @@ analysePositionArray = async (req, res) =>
         })
     }
 
-    console.log("Got body; ", body);
+    // console.log("Got body; ", body);
 
     // * call up the engine handler
     const depth = body.hasOwnProperty("maxDepth") ? body.maxDepth : 12;
