@@ -1,0 +1,13 @@
+name: buildClient
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - run: cd client
+    - run: echo "NEXT_PUBLIC_SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env.local
+    - run: npm run build

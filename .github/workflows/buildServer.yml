@@ -1,0 +1,12 @@
+name: buildClient
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: cd server
+    - run: echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env.production.local
+    - run: npm run start
