@@ -3,3 +3,8 @@ node_modules
 dist
 .vercel
 .env
+
+.env.development
+.env.production
+.env.local
+.env*

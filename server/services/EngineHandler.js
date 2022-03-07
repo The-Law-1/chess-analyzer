@@ -126,7 +126,7 @@ async function AnalysePositions(fenPositions, maxDepth = 12)
             }
             fullResult.push(analysis);
         }
-        // console.log(`Done with move ${i}`);
+        console.log(`Done with move ${i}`);
     }
 
     await engine.quit();

@@ -7,7 +7,7 @@ const generatedDocumentation = require('./doc/Generator');
 
 // const swaggerDocument = require('./doc/swagger.json');
 
-const apiPort = 3000;
+const apiPort = process.env.SERVER_PORT;
 
 const testRouter = require('./routes/Test');
 const engineRouter = require('./routes/EngineRouter');
