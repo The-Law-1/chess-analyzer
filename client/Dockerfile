@@ -2,8 +2,8 @@ FROM node:lts-alpine
 WORKDIR /app
 EXPOSE 3000
 
-COPY ["client", "/app"]
-RUN npm install
+COPY [".", "/app"]
+RUN npm install --silent
 RUN npm run build
 
 CMD ["npm", "run", "start"]

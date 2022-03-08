@@ -1,12 +1,23 @@
 version: "3.9"
 services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+
+    environment:
+      - SERVER_PORT=${SERVER_PORT}
+      - ENGINE_PATH=${ENGINE_PATH}
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+
   client:
     build:
-      context: .
-      dockerfile: "client/Dockerfile"
+      context: ./client
+      dockerfile: Dockerfile
     environment:
       - SERVER_PORT=${SERVER_PORT}
     ports:
       - "${CLIENT_PORT}:${CLIENT_PORT}"
-    # depends_on:
-    #   - "server"
+    depends_on:
+      - "server"
