@@ -1,7 +1,22 @@
 // import { Engine } from "node-uci";
 const Engine = require('node-uci').Engine
 
-const engine = new Engine("./engine/stockfish");
+// * can be relative or complete path, full path would be safer but you do you
+const pathToEngine = process.env.ENGINE_PATH;
+console.log("Got path to engine = ", pathToEngine);
+
+const engine = new Engine(pathToEngine);
+
+testEngine = async () => {
+    try {
+        await engine.init();
+        console.log("Engine is good");
+        await engine.quit();
+    } catch (e) {
+        console.log("Failed to init engine");
+    }
+}
+testEngine();
 
 async function TestEngine()
 {
