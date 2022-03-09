@@ -8,15 +8,13 @@ on:
     branches:
       - '*'
 
-env:
-  SERVER_PORT: ${{ SERVER_PORT }}
-  CLIENT_PORT: ${{ CLIENT_PORT }}
-  ENGINE_PATH: ${{ ENGINE_PATH }}
-
-
-
 jobs:
   build:
+    env:
+      SERVER_PORT: ${{ secrets.SERVER_PORT }}
+      ENGINE_PATH: ${{ secrets.ENGINE_PATH }}
+      CLIENT_PORT: ${{ secrets.CLIENT_PORT }}
+
     runs-on: ubuntu-latest
 
     steps:
