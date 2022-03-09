@@ -14,5 +14,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - run: echo $ENGINE_PATH
+    - run: echo ${{env.ENGINE_PATH}}
     - run: docker-compose build
