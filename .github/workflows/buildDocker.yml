@@ -8,11 +8,17 @@ on:
     branches:
       - '*'
 
+env:
+  SERVER_PORT: ${{ SERVER_PORT }}
+  CLIENT_PORT: ${{ CLIENT_PORT }}
+  ENGINE_PATH: ${{ ENGINE_PATH }}
+
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - run: echo ${{env.ENGINE_PATH}}
     - run: docker-compose build
