@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, GridItem, IconButton, position, SimpleGrid, Slider, SliderFilledTrack, SliderTrack, Spinner, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Grid, GridItem, IconButton, position, SimpleGrid, Slider, SliderFilledTrack, SliderTrack, Spinner, Text, Tooltip } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
 
 import React, { useEffect, useState } from 'react';
@@ -286,37 +286,23 @@ function AnalysisSection({newPGNValue}) {
                             ShowPlayerSummary("Black")}
                         </>
                     </Flex>
-                    <SimpleGrid spacingX={10} height='500px'width='300px' templateColumns='repeat(2, 1fr)' overflowY='scroll'>
+                    <Box height='500px' minW='300px' width='300px' overflowY='scroll'>
                         {
                             history.map((move, i) => (
+                                <div key={i}>
+                                    {i % 2 === 0 && (
+                                        <Grid templateColumns='repeat(2, 1fr)' gap={6}>
+                                            {MoveButton(i, move)}
+                                            {i + 1 < history.length && (
+                                                MoveButton(i + 1, history[i + 1])
+                                            )}
+                                        </Grid>
+                                    )}
 
-                                <Box
-                                    key={i}>
-
-                                    <Text
-                                        // maxWidth={(move.san.length + 3 + i % 10) + 'ch'}
-                                        maxWidth='10ch'
-                                        backgroundColor={i === currentMoveIndex ? '#4A5568' : ""}
-                                        as="i"
-                                        scrollBehavior="smooth"
-                                        cursor="pointer"
-                                        onClick={() => PlayMoveAtIndex(i)}
-                                        >
-                                        {(i % 2 === 0) &&
-                                            i / 2 + 1 + ". "
-                                        }
-                                        {move.san}
-
-                                        {(i % 2 === 1) &&
-                                            <br/>
-                                        }
-                                    </Text>
-
-                                    {/* //! ask someone how to get this box to span the whole grid */}
-                                    {
-                                        (i === currentMoveIndex) &&
+{
+                                    (i === currentMoveIndex) &&
                                         <Box
-                                            w="200%"
+                                            w="100%"
                                             background='gray'
                                             >
                                                 {(i === currentMoveIndex && moveEvals.length > 0 && moveEvals[i] !== null && moveEvals[i] !== undefined) && 
@@ -339,13 +325,11 @@ function AnalysisSection({newPGNValue}) {
                                                 }
                                         </Box>
                                     }
-                                </Box>
-
+                                </div>
                             ))
                         }
-                    </SimpleGrid>
+                    </Box>
 
-                    {/* // todo show the total okay/good/bad/best moves */}
                     <Flex>
                         <IconButton
                             color="gray.100"
@@ -373,6 +357,22 @@ function AnalysisSection({newPGNValue}) {
 
         </>
     );
+
+    function MoveButton(i, move) {
+        return <Box>
+            <Text
+                maxWidth='10ch'
+                backgroundColor={i === currentMoveIndex ? '#4A5568' : ""}
+                as="i"
+                scrollBehavior="smooth"
+                cursor="pointer"
+                onClick={() => PlayMoveAtIndex(i)}
+            >
+                { i % 2 === 0 && i / 2 + 1 + ". "}
+                {move.san}
+            </Text>
+        </Box>;
+    }
 }
 
 export default AnalysisSection;
